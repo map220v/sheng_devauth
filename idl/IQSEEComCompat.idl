@@ -1,0 +1,22 @@
+// Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: BSD-3-Clause-Clear
+
+interface IQSEEComCompat {
+  error ERROR_APP_UNAVAILABLE;
+
+  method sendRequest(in buffer reqIn,
+                     in buffer rspIn,
+                     out buffer reqOut,
+                     out buffer rspOut,
+                     in uint32[] embeddedBufOffsets,
+                     in uint32 is64,
+                     in interface smo1,
+                     in interface smo2,
+                     in interface smo3,
+                     in interface smo4);
+
+  method disconnect();
+
+  method unload();
+};
+

@@ -1,0 +1,168 @@
+// Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: BSD-3-Clause-Clear
+
+include "IIO.idl"
+include "ICredentials.idl"
+
+/**
+ * IClientEnv is the interface that REE clients use to obtain objects
+ * from the TEE via MINK-IPC.
+ */
+ /** @cond */
+interface IClientEnv {
+/** @endcond */
+
+  /**
+   * @addtogroup IClientEnv
+   * @{
+   */
+
+  /**
+   * Error codes
+   */
+  /** @cond */
+  error ERROR_COMMONLIBS_ALREADY_LOADED;  /**< Commonlib already loaded */
+  error ERROR_APP_REGION_ALREADY_SET;     /**< TA region already set*/
+
+  /** @endcond */
+
+  /**
+    Gets a service object from the Client Environment.
+
+    @param[in]  uid  Identifies a class of service object.
+    @param[out] obj  Instance of the requested service.
+
+    @return
+    Object_OK on success.
+  */
+  method open (in uint32 uid,
+               out interface obj);
+
+  /**
+    Registers a REE client with the specified credentials and returns a
+    client environment object that the client can use to obtain service
+    objects. \n
+
+    @note1hang: This method is DEPRECATED.
+
+    @param[in] credentials  Buffer containing credentials identifying the
+                            client.
+    @param[out] clientEnv   Returned registered client environment object.
+
+    @return
+    Object_OK on success.
+  */
+  method registerLegacy (in buffer credentials,
+                         out interface clientEnv);
+
+  /**
+    Registers a REE client with the specified credentials and returns a
+    client environment object that the client can use to obtain service
+    objects.
+
+    @param[in] credentials  Callback object implementing the IIO
+                            interface which can be queried to return the REE
+                            credentials of the client being registered.
+    @param[out] clientEnv   Returned registered client environment object.
+
+    @return
+    Object_OK on success.
+  */
+  method registerAsClient (in IIO credentials,
+                   out interface clientEnv);
+
+  /**
+    Registers a REE client with the specified credentials and restricts it
+    to the specified list of UIDs. The client can use the returned client
+    environment object to obtain service objects.
+
+    The returned client environment object can only obtain the
+    services with UIDs in the passed UID list.
+
+    @param[in] credentials  Callback object implementing the IIO
+                            interface which can be queried to return the REE
+                            credentials of the client being registered.
+    @param[in] uids         Class UIDs list the returned client environment
+                            object can obtain.
+    @param[out] clientEnv   Returned registered client environment object.
+
+    @return
+    Object_OK on success.
+  */
+  method registerWithWhitelist (in IIO credentials,
+                                in uint32[] uids,
+                                out interface clientEnv);
+
+  /**
+    Asserts that QTEE has no references to remote NS domain objects other than
+    the single reference to the primordial object and that the NS domain has no
+    references to QTEE objects other than the single reference to the root
+    ClientEnv.
+
+    @return Object_OK on success, else assert on failure.
+   */
+  method notifyDomainChange();
+
+  /**
+    Registers a REE client with the ICredentials object and returns a
+    client environment object that the client can use to obtain service
+    objects.
+
+    @param[in] credentials  Callback object implementing the ICredentials
+                            interface which can be queried to return the REE
+                            credentials of the client being registered.
+                            This can be NULL only if client code is privilieged
+                            code (kernel or higher exception level.)
+    @param[out] clientEnv   Returned registered client environment object.
+
+    @return
+    Object_OK on success.
+  */
+  method registerWithCredentials (in ICredentials credentials,
+                                  out interface clientEnv);
+
+  /**
+    Loads Cmnlib binary.
+    The library binary is passed as a buffer.
+
+    @param[in]  cmnlibElf         Buffer containing ELF image.
+
+    @return  Object_OK if successful.
+   */
+  method loadCmnlibFromBuffer(in buffer cmnlibElf);
+
+  /**
+    Configure TA region.
+    TA region address and length is passed as a buffer.
+
+    @param[in]  appRgnAddr         TA region base address.
+    @param[in]  appRgnSize         TA region size.
+
+    @return  Object_OK if successful.
+   */
+  method configTaRegion(in uint64 appRgnAddr, in uint32 appRgnSize);
+
+  /**
+    Registers a thread to be used for ADCI (Arbitrary Destination Callback
+    Invocations). Will not return until successfully canceled unless an error
+    occurs.
+
+    @return
+    Object_OK on successful cancel of ADCI accept thread.
+    Object_ERROR on failure.
+   */
+  method adciAccept();
+
+  /**
+    Cancels any previously registered ADCI accept thread.
+
+    @return
+    Object_OK on success.
+    Object_ERROR on failure.
+   */
+  method adciShutdown();
+
+
+  /* @} */ /* end_addtogroup IClientEnv */
+};
+

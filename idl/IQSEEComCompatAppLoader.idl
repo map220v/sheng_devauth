@@ -1,0 +1,44 @@
+// Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: BSD-3-Clause-Clear
+
+include "IQSEEComCompat.idl"
+
+interface IQSEEComCompatAppLoader {
+  const uint32 MAX_FILENAME_LEN = 64;
+  const uint32 MAX_DISTNAME_LEN = 128; //check
+  const uint32 ELFCLASS32 = 1;
+  const uint32 ELFCLASS64 = 2;
+
+  error ERROR_INVALID_BUFFER;
+  error ERROR_PIL_ROLLBACK_FAILURE;
+  error ERROR_ELF_SIGNATURE_ERROR;
+  error ERROR_METADATA_INVALID;
+  error ERROR_MAX_NUM_APPS;
+  error ERROR_NO_NAME_IN_METADATA;
+  error ERROR_ALREADY_LOADED;
+  error ERROR_EMBEDDED_IMAGE_NOT_FOUND;
+  error ERROR_TZ_HEAP_MALLOC_FAILURE;
+  error ERROR_TA_APP_REGION_MALLOC_FAILURE;
+  error ERROR_CLIENT_CRED_PARSING_FAILURE;
+  error ERROR_APP_UNTRUSTED_CLIENT;
+  error ERROR_APP_BLACKLISTED;
+  error ERROR_APP_NOT_LOADED;
+  error ERROR_NOT_QSEECOM_COMPAT_APP;
+  error ERROR_FILENAME_TOO_LONG;
+  error ERROR_APP_ARCH_NOT_SUPPORTED;
+  error ERROR_VM_NOT_WHITELISTED_TO_LOAD_TA;
+  error ERROR_ELF_LOADING;
+
+  method loadFromRegion(in interface appElf,
+                        in buffer filename,
+                        out IQSEEComCompat appCompat);
+
+  method loadFromBuffer(in buffer appElf,
+                        in buffer filename,
+                        out buffer distName,
+                        out IQSEEComCompat appCompat);
+
+  method lookupTA(in buffer appName,
+                  out IQSEEComCompat appCompat,
+                  out uint32 appArchType);
+};
