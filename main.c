@@ -107,8 +107,8 @@ int main() {
 		goto exit;
 	}
 
-	char *buffer_send = malloc(64);
-	char *buffer_recv = malloc(64);
+	char *buffer_send = malloc(128);
+	char *buffer_recv = malloc(128);
 	size_t send_len;
 	size_t recv_len;
 
@@ -130,8 +130,8 @@ int main() {
 			syslog(LOG_ERR, "Failed to init RPMB listener, err=%d\n", ret);
 			break;
 		}
-		memset(buffer_send, 0, 64);
-		memset(buffer_recv, 0, 64);
+		memset(buffer_send, 0, 128);
+		memset(buffer_recv, 0, 128);
 		*(uint64_t *)(buffer_send + 0) = 0x1;
 		*(uint32_t *)(buffer_send + 4) = 0x2020;
 		memcpy(buffer_send + 12, uid, 32);
@@ -141,10 +141,10 @@ int main() {
 		//offline key to produce offline pad token
 		ret = IQSEEComCompat_sendRequest(
 			app_controller,
-			buffer_send, 64,
-			buffer_recv, 64,
-			buffer_send, 64, &send_len,
-			buffer_recv, 64, &recv_len,
+			buffer_send, 128,
+			buffer_recv, 128,
+			buffer_send, 128, &send_len,
+			buffer_recv, 128, &recv_len,
 			NULL, 0,
 			1,
 			Object_NULL, Object_NULL,
