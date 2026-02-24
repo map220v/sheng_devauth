@@ -1,10 +1,4 @@
-#CFLAGS=-g
-CFLAGS=-O2
-LDFLAGS=
 LIBS=-Llibs -lrpmbservice -lminkadaptor -lqcomtee -lqcbor -Iminkipc -Iidl
-CC=clang
-
-#all: idl xiaomi_devauth
 
 .PHONY: idl
 
